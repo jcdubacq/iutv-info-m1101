@@ -8,6 +8,7 @@ Disposer d'une version de python et de pip3
     pip3 install tutormagic --user
     pip3 install nbtutor --user
     pip3 install matplotlib --user
+    pip3 install hide_code --user
     pip3 install git+git://github.com/mkrphys/ipython-tikzmagic.git --user
     jupyter nbextension enable --py widgetsnbextension --user
     jupyter nbextension install --py hide_code --user
