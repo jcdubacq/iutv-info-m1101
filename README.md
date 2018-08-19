@@ -24,6 +24,10 @@ S'assurer que `~/.local/bin` est dans le chemin d'exécution :
     fi
     EOF
 
+Pour installer pip et python3 sur un système Debian/Ubuntu
+
+    sudo apt-get install python3-pip
+
 Actuellement, les lignes suivantes ne sont plus utiles :
 
     jupyter nbextension install --overwrite --symlink --user --py nbtutor
