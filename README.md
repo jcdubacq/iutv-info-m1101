@@ -6,14 +6,19 @@ Disposer d'une version de python et de pip3
 
     pip3 install jupyter --user
     pip3 install tutormagic --user
+    pip3 install jupyter_nbextensions_configurator --user
     pip3 install nbtutor --user
     pip3 install matplotlib --user
     pip3 install graphviz --user
     pip3 install hide_code --user
     pip3 install git+git://github.com/mkrphys/ipython-tikzmagic.git --user
+    pip3 install jupyter_contrib_nbextensions --user
+    jupyter nbextensions_configurator enable --user
     jupyter nbextension enable --py widgetsnbextension --user
     jupyter nbextension install --py hide_code --user
     jupyter nbextension enable --py hide_code --user
+    jupyter nbextension enable --py toc2 --user
+    jupyter contrib nbextension install --user
     jupyter serverextension enable --py hide_code --user
 
 S'assurer que `~/.local/bin` est dans le chemin d'exécution :
