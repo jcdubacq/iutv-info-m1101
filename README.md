@@ -1,6 +1,6 @@
 # Nouvelle version du cours M1101
 
-Pour installer:
+## Pour installer
 
 Disposer d'une version de python et de pip3
 
@@ -20,6 +20,8 @@ Disposer d'une version de python et de pip3
     jupyter nbextension enable --py toc2 --user
     jupyter contrib nbextension install --user
     jupyter serverextension enable --py hide_code --user
+    jupyter-nbextensions_configurator enable
+    jupyter-nbextension enable toc2/main
 
 S'assurer que `~/.local/bin` est dans le chemin d'exécution :
 
@@ -39,7 +41,25 @@ Pour installer les autres programmes utiles:
     sudo apt-get install texlive-full graphviz
 
 
+## Pour démarrer
+
+    cd .../iutv-info-M1101
+    jupyter-notebook # ouvre un navigateur
+
+Lorsque vous êtes dans un notebook (M1101-XXX) il faut aller dans `View > Cell toolbar > Hide code` pour faire apparaître sur chaque cellule le contrôle de la visibilité du code (souvent caché).
+
+Certaines cellules qui contiennent des exercices (*activités*) peuvent être relancées pour obtenir un exercice différent.
+Certaines cellules qui suivent une activité sont là pour vérifier si l'exercice précédent est correct ou non.
+
+## Pour mémoire
+
 Actuellement, les lignes suivantes ne sont plus utiles :
 
     jupyter nbextension install --overwrite --symlink --user --py nbtutor
     jupyter nbextension enable nbtutor --user --py
+
+## Pour nettoyer
+
+Sous Linux :
+
+    rm -rf ~/.local/bin ~/.local/share/jupyter ~/.jupyter/ ~/.local/lib  ~/.cache/pip/
