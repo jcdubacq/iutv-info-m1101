@@ -59,6 +59,17 @@ class utils(object):
         else:
             display(Markdown('`_____________________________________________________`'))
     
+    def questionint(self,markdown,rangelow,rangehigh):
+        print('', end='', flush=True)
+        display(Markdown(markdown))
+        if (self.interactif):
+            rep=input('Un entier > ')
+            return(int(rep))
+        else:
+            rep=random.randint(rangelow,rangehigh)
+            display(Markdown('Un entier > `{0}___________________________________________________`'.format(rep)))
+            return(rep)
+    
     def solution(self,markdown):
         print('', end='', flush=True)
         if (self.interactif):
