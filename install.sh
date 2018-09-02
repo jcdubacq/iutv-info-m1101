@@ -10,28 +10,60 @@ checkinstall() {
     fi
 }
 
+pipinstall() {
+    echo -n "[python:$@]"
+    pip3 -q install $@ --user
+    x=$?
+    if [ "$x" = 0 ]; then
+        echo "...ok"
+    else
+        echo "...ko"
+        exit
+    fi
+}
+
+jupyterconfig() {
+    x=$1
+    shift
+    echo -n "[configuration:$x]"
+    jupyter "$@" > /dev/null 2>/dev/null
+    x=$?
+    if [ "$x" = 0 ]; then
+        echo "...ok"
+    else
+        echo "...ko"
+        exit
+    fi
+}
+
 checkinstall pip3 python3-pip
 checkinstall dot graphviz
 checkinstall pdflatex texlive
 
-pip3 install jupyter --user
-pip3 install tutormagic --user
-pip3 install jupyter_nbextensions_configurator --user
-pip3 install nbtutor --user
-pip3 install matplotlib --user
-pip3 install graphviz --user
-pip3 install hide_code --user
-pip3 install git+git://github.com/mkrphys/ipython-tikzmagic.git --user
-pip3 install jupyter_contrib_nbextensions --user
-jupyter nbextensions_configurator enable --user
-jupyter nbextension enable --py widgetsnbextension --user
-jupyter nbextension install --py hide_code --user
-jupyter nbextension enable --py hide_code --user
-jupyter nbextension enable --py toc2 --user
-jupyter contrib nbextension install --user
-jupyter serverextension enable --py hide_code --user
-jupyter-nbextensions_configurator enable
-jupyter-nbextension enable toc2/main
+PATH="$HOME/.local/bin:$PATH"
+
+pipinstall jupyter
+
+if which jupyter > /dev/null ; then echo "ok, jupyter accessible."; else echo "Mais où est jupyter ?"; exit; fi
+
+pipinstall tutormagic
+pipinstall jupyter_nbextensions_configurator
+pipinstall nbtutor
+pipinstall matplotlib
+pipinstall graphviz
+pipinstall hide_code
+pipinstall git+git://github.com/mkrphys/ipython-tikzmagic.git
+pipinstall jupyter_contrib_nbextensions
+
+echo -n "[configuration]"
+jupyterconfig enable:nbextensions_configurator nbextensions_configurator enable --user
+jupyterconfig enable:widgetsnbextension nbextension enable --py widgetsnbextension --user
+jupyterconfig install:hide_code nbextension install --py hide_code --user
+jupyterconfig enable:hide_code nbextension enable --py hide_code --user
+jupyterconfig contrib:install contrib nbextension install --user
+jupyterconfig serverextension:hide_code serverextension enable --py hide_code --user
+jupyterconfig enable:nbextensions_configurator nbextensions_configurator enable
+jupyterconfig enable:toc2 nbextension enable toc2/main
 
 OLDIFS="$IFS"
 IFS=":"
@@ -44,7 +76,7 @@ for p in $PATH ; do
     IFS=":"
 done
 IFS="$OLDIFS"
-echo "$PATH"|cut -f
+
 if [ "$FOUND" = 0 ]; then
     cat >> ~/.profile << EOF
 # set PATH so it includes user's private bin if it exists
@@ -55,5 +87,11 @@ EOF
 fi
 
 
+echo "Avant de lancer jupyter, ouvrez un nouveau shell ou tapez :"
+echo 'PATH="$HOME/.local/bin:$PATH"'
+
+if [ -f Plan.ipynb ]; then
+    exec jupyter notebook
+fi
 # nettoyage
 # rm -rf ~/.local/bin ~/.local/share/jupyter ~/.jupyter/ ~/.local/lib  ~/.cache/pip/
