@@ -1,5 +1,13 @@
 #! /bin/sh
 
+# Pour IUTV: /iutv/Mes_Montages/TP/TPINFO/M1101/install.sh
+
+PIPNAME=pip3
+pip3 --version > /dev/null 2>/dev/null
+if [ "$?" != "0" ]; then
+	PIPNAME=pip
+fi
+
 checkinstall() {    
     if which "$1" > /dev/null ; then
         echo "[$2]...ok"
@@ -12,7 +20,7 @@ checkinstall() {
 
 pipinstall() {
     echo -n "[python:$@]"
-    pip3 -q install $@ --user
+    $PIPNAME -q install $@ --user
     x=$?
     if [ "$x" = 0 ]; then
         echo "...ok"
@@ -36,7 +44,7 @@ jupyterconfig() {
     fi
 }
 
-checkinstall pip3 python3-pip
+checkinstall $PIPNAME python3-pip
 checkinstall dot graphviz
 checkinstall pdflatex texlive
 
@@ -55,7 +63,7 @@ pipinstall hide_code
 pipinstall git+git://github.com/mkrphys/ipython-tikzmagic.git
 pipinstall jupyter_contrib_nbextensions
 
-echo -n "[configuration]"
+echo "[configuration]"
 jupyterconfig enable:nbextensions_configurator nbextensions_configurator enable --user
 jupyterconfig enable:widgetsnbextension nbextension enable --py widgetsnbextension --user
 jupyterconfig install:hide_code nbextension install --py hide_code --user
@@ -95,3 +103,4 @@ if [ -f Plan.ipynb ]; then
 fi
 # nettoyage
 # rm -rf ~/.local/bin ~/.local/share/jupyter ~/.jupyter/ ~/.local/lib  ~/.cache/pip/
+
