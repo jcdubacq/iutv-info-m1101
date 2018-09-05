@@ -46,20 +46,34 @@ Pour installer les autres programmes utiles:
     cd .../iutv-info-M1101
     jupyter-notebook # ouvre un navigateur
 
+
+## Pour démarrer à l'IUT
+
+Une fois tout installé avec le script de /iutv/Mes_Montages/TP/TPINFO/M1101/install.sh en cas de problème, on peut relancer le tout:
+
+    # Ouvrir un nouveau terminal, puis :
+    source activate m1101
+    cd ~/Documents/iutv-info-m1101
+    jupyter notebook list
+    jupyter notebook stop 8888
+    # Recommencer avec les autres numéros s'il y en a plusieurs
+    jupyter notebook # <== démarre le nouveau jupyter
+
+Quand un notebook est ouvert, commencer tout de suite par l'exécuter en redémarrage avec le bouton ⏩
 Lorsque vous êtes dans un notebook (M1101-XXX) il faut aller dans `View > Cell toolbar > Hide code` pour faire apparaître sur chaque cellule le contrôle de la visibilité du code (souvent caché).
 
 Certaines cellules qui contiennent des exercices (*activités*) peuvent être relancées pour obtenir un exercice différent.
 Certaines cellules qui suivent une activité sont là pour vérifier si l'exercice précédent est correct ou non.
 
-## Pour mémoire
+Après la première exécution par le bouton ⏩, le notebook a été fait en mode "non-interactif". À la fin, le notebook bascule en mode "interactif". Si vous refaites un exercice en le relançant il va proposer d'attendre les solutions et (parfois) dire si elles sont correctes ou pas.
 
-Actuellement, les lignes suivantes ne sont plus utiles :
+**IMPORTANT :** Si vous êtes en mode interactif et qu'un exercice attend une réponse, le notebook n'affichera plus rien tant que le noyau attendra une réponse pour l'exercice. Soit vous répondez (si vous vous souvenez où c'est), soit vous stoppez et relancez le noyau (avec exécution de toutes les cellules de préférence).
 
-    jupyter nbextension install --overwrite --symlink --user --py nbtutor
-    jupyter nbextension enable nbtutor --user --py
 
 ## Pour nettoyer
 
-Sous Linux :
+Sous Linux avec juste le script `install.sh`:
 
     rm -rf ~/.local/bin ~/.local/share/jupyter ~/.jupyter/ ~/.local/lib  ~/.cache/pip/
+    
+À l'IUT, c'est plus compliqué à cause de l'environnement conda qui est utilisé pour avoir une version suffisante de python3/pip3.
