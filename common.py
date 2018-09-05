@@ -12,6 +12,7 @@ interactif = False
 class utils(object):
     def __init__(self, inter):
         self.interactif = inter
+        self.answers = False
         self.widgets = widgets
         print('Ce cours a été régénéré le',datetime.datetime.now())
         
@@ -28,6 +29,13 @@ class utils(object):
         else:
             print("Mode interactif")
             self.interactif = True
+    def soltoggle(self):
+        if self.answers:
+            print("Mode sans correction")
+            self.answers = False
+        else:
+            print("Mode corrigé")
+            self.answers = True
 
     def activite(self,title):
         display(Markdown('#### Activité : '+title))
@@ -76,7 +84,8 @@ class utils(object):
             rep=input('Votre proposition > ')
         else:
             display(Markdown('Votre proposition > `_____________________________________________________`'))
-        display(Markdown('**Solution:** '+markdown))
+        if self.answers:
+            display(Markdown('**Solution:** '+markdown))
     
     def solutioncheck(self,question, answer, feedback_yes, feedback_no):
         print('', end='', flush=True)
@@ -91,7 +100,8 @@ class utils(object):
                 display(Markdown(feedback_no))
         else:
             display(Markdown(question+' > `_____________________________________________________`'))
-            display(Markdown('**Solution :** '+answer))
+            if self.answers:
+                display(Markdown('**Solution :** '+answer))
         return ret
     
     def reasonablenumbertostr(self,f):
@@ -186,4 +196,136 @@ class utils(object):
                 root = '10^{'+str(ten)+'}'
         return '$'+root+'$'
 
+    def basicmachine(self,mem,memi,outputratio = 4):
+        next=0
+        step=0
+
+        r=[0,0,0,0]
+        pc=0
+
+        inst=['—']
+        val1=0
+        val2=0
+        result=0
+
+        phase="Booting"
+
+        header='| Étape | Phase | R0 | R1 | R2 | R3 | INST | VAL1 | VAL2 | RESULT | MEM |'
+        headel='|-------|-------|----|----|----|----|------|------|------|--------|-----|'
+
+        out=[header,headel]
+        olda=[]
+
+        def output(olda):
+            a=[]
+            a.append(str(step))
+            a.append(str(phase))
+            a=a+[c for c in map(str,r)]
+            a.append(' '.join(inst))
+            a.append(str(val1))
+            a.append(str(val2))
+            a.append(str(result))
+            lastnz=0
+            for i in range(0,len(mem)):
+                if mem[i]!=0:
+                    lastnz=i
+            if lastnz+1==len(mem):
+                a.append(','.join(mem))
+            else:
+                a.append(','.join(map(str,mem[:lastnz+1]))+'...')
+            b=a.copy()
+            for x in range(0,len(a)):
+                if (len(olda)>0):
+                    if (olda[x]!=a[x]):
+                        b[x]='**'+a[x]+'**'
+            olda=a.copy()
+            l="|"+(" | ".join(b))+"|"
+            out.append(l)
+        outputratio=4
+        output(olda)
+
+        # LOAD PUT STORE ADD MUL SUB CMP0 GOTO
+        # LOAD charge depuis la mémoire dans un registre
+        # PUT met un entier dans un registre
+        # STORE met depuis un registre dans la mémoire
+        # ADD MUL et SUB font des opérations entre deux registres et mettent le résultat dans un registre
+        # CMP0 va à une adresse si deux registres sont égaux
+        # GOTO va a une adresse
+        # STOP arrête la machine
+
+        while True:
+            step = step + 1
+            phase="Instruction"
+            inst=memi[pc]
+            codeop=inst[0]
+            if len(inst)>1:
+                argone=inst[1]
+            if len(inst)>2:
+                argtwo=inst[2]
+            if len(inst)>3:
+                argthree=inst[3]
+            else:
+                argthree="-"
+            if outputratio==4:
+                output(olda)
+            phase="Preparation"
+            if codeop=="LOAD":
+                val1=mem[int(argone)]
+            if codeop=="STORE":
+                val1=r[int(argtwo)]
+            if codeop=="ADD" or codeop=="SUB" or codeop=="MUL":
+                val1=r[int(argone)]
+                val2=r[int(argtwo)]
+            if codeop=="PUT":
+                val1=int(argone)
+            if codeop=="GOTO":
+                val1=int(argone)
+            if codeop=="CMP0":
+                val1=int(argone)
+                val2=r[int(argtwo)]
+            if codeop=="STOP":
+                break
+            if outputratio==4:
+                output(olda)
+            phase="Execution"
+            next=pc+1
+            if codeop=="ADD":
+                result=val1+val2
+            if codeop=="SUB":
+                result=val1-val2
+            if codeop=="MUL":
+                result=val1*val2
+            if codeop=="LOAD" or codeop=="STORE" or codeop=="PUT":
+                result=val1
+            if codeop=="GOTO":
+                next=val1
+            if codeop=="CMP0":
+                if val2==0:
+                    next=val1
+
+            if outputratio==4:
+                output(olda)
+            phase="Store"
+            if codeop=="LOAD" or codeop=="PUT":
+                r[int(argtwo)]=result
+            if codeop=="STORE":
+                mem[int(argone)]=result
+            if codeop=="ADD" or codeop=="MUL" or codeop=="SUB":
+                r[int(argthree)]=result
+            pc=next
+            output(olda)
+        phase="Stop"
+        output(olda)
+
+        def outputn(Step):
+            self.mark('\n'.join(out[:(outputratio*Step+3)]))
+
+        if self.interactif:
+            w=self.widgets.interactive(outputn, Step=(0,(len(out)-1)//outputratio))
+            w.children[0].value=w.children[0].max
+            w.children[0].description='Étape'
+            display(w)
+        else:
+            outputn((len(out)-1)//outputratio)
+                
 
