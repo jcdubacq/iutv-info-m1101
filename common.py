@@ -1,11 +1,17 @@
 from __future__ import print_function
 import math
 import random
-from IPython.display import display, Markdown, Latex, HTML
+from IPython.display import display, Markdown, Latex, HTML, Image
 import ipywidgets as widgets
 import datetime
+import os
 
-get_ipython().run_line_magic('reload_ext', 'tikzmagic')
+tikzmode = True
+
+try:
+    get_ipython().run_line_magic('reload_ext', 'tikzmagic')
+except(ModuleNotFoundError):
+    tikzmode = False
 
 interactif = False
 
@@ -18,6 +24,21 @@ class utils(object):
         
     def __str__(self):
         return "{} ".format(self.__class__.__name__)
+
+    def tikz(self,tikzfile,tikzargs,tikzstring):
+        tikzpath="tikz/{0}.png".format(tikzfile)
+        if tikzmode:
+            try:
+                os.stat("tikz")
+            except:
+                os.mkdir("tikz")
+            a=get_ipython().run_cell_magic("tikz","-S "+tikzpath+' '+tikzargs,tikzstring)
+        else:
+            try:
+                os.stat(tikzpath)
+                display(Image(filename=tikzpath))
+            except(FileNotFoundError):
+                display(Markdown('La figure `{0}` est introuvable.'.format(tikzfile)))
 
     def mark(self,m):
         display(Markdown(m))
