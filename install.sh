@@ -8,11 +8,19 @@ if [ "$?" != "0" ]; then
 	PIPNAME=pip
 fi
 
+maybeinstall() {    
+    if which "$1" > /dev/null ; then
+        echo "[$2]...ok"
+    else
+        echo "Il faudrait installer $2"
+        echo "sudo apt-get install $2"
+    fi
+}
 checkinstall() {    
     if which "$1" > /dev/null ; then
         echo "[$2]...ok"
     else
-        echo "Il faut installer $2 pour Python3"
+        echo "Il faut installer $2"
         echo "sudo apt-get install $2"
         exit
     fi
@@ -46,7 +54,8 @@ jupyterconfig() {
 
 checkinstall $PIPNAME python3-pip
 checkinstall dot graphviz
-checkinstall pdflatex texlive
+maybeinstall pdflatex texlive
+maybeinstall wkhtmltopdf wkhtmltopdf
 
 PATH="$HOME/.local/bin:$PATH"
 
