@@ -17,11 +17,22 @@ interactif = False
 
 class utils(object):
     def __init__(self, inter):
-        self.interactif = inter
-        self.answers = False
+        self.switch(inter)
         self.widgets = widgets
+        self.blank = '`_____________________________________________________`'
         print('Ce cours a été régénéré le',datetime.datetime.now())
-        
+    def switch(self,inter):
+        self.interactif = False
+        self.answers = False
+        if inter == "PDF+SOL":
+            self.interactif = False
+            self.answers = True
+        if inter == "INTER":
+            self.interactif = True
+            self.answers = False
+        if inter == "PROF":
+            self.interactif = True
+            self.answers = True
     def __str__(self):
         return "{} ".format(self.__class__.__name__)
 
@@ -86,7 +97,10 @@ class utils(object):
         if (self.interactif):
             rep=input('Votre proposition > ')
         else:
-            display(Markdown('`_____________________________________________________`'))
+            display(Markdown(self.blank))
+    def solcomment(self,markdown):
+        if self.answers:
+            display(Markdown(markdown))
     
     def questionint(self,markdown,rangelow,rangehigh):
         print('', end='', flush=True)
@@ -96,7 +110,7 @@ class utils(object):
             return(int(rep))
         else:
             rep=random.randint(rangelow,rangehigh)
-            display(Markdown('Un entier > `{0}___________________________________________________`'.format(rep)))
+            display(Markdown('Un entier > `{0}`'.format(rep)))
             return(rep)
     
     def solution(self,markdown):
@@ -104,7 +118,7 @@ class utils(object):
         if (self.interactif):
             rep=input('Votre proposition > ')
         else:
-            display(Markdown('Votre proposition > `_____________________________________________________`'))
+            display(Markdown('Votre proposition > '+self.blank))
         if self.answers:
             display(Markdown('**Solution:** '+markdown))
     
@@ -120,7 +134,7 @@ class utils(object):
             else:
                 display(Markdown(feedback_no))
         else:
-            display(Markdown(question+' > `_____________________________________________________`'))
+            display(Markdown(question+' > '+self.blank))
             if self.answers:
                 display(Markdown('**Solution :** '+answer))
         return ret
