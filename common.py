@@ -20,7 +20,16 @@ class utils(object):
         self.switch(inter)
         self.widgets = widgets
         self.blank = '`_____________________________________________________`'
-        print('Ce cours a été régénéré le',datetime.datetime.now())
+        mode='Ce cours a été régénéré le {0}.'.format(datetime.datetime.now())
+        if self.answers:
+            mode = mode + ' Mode avec corrigé.'
+        else:
+            mode = mode + ' Mode sans corrigé.'
+        if self.interactif:
+            mode = mode + ' Mode interactif.'
+        else:
+            mode = mode + ' Mode statique.'
+        print(mode)
     def switch(self,inter):
         self.interactif = False
         self.answers = False
