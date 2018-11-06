@@ -16,7 +16,7 @@ except(ModuleNotFoundError):
 interactif = False
 
 class utils(object):
-    def __init__(self, inter):
+    def __init__(self, inter, seed = None):
         self.switch(inter)
         self.widgets = widgets
         self.blank = '`_____________________________________________________`'
@@ -29,6 +29,9 @@ class utils(object):
             mode = mode + ' Mode interactif.'
         else:
             mode = mode + ' Mode statique.'
+        if seed != None:
+            mode = mode + ' Modèle numéro {}.'.format(seed)
+            random.seed(seed)
         print(mode)
     def switch(self,inter):
         self.interactif = False
