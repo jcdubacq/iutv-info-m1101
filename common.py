@@ -55,7 +55,16 @@ class utils(object):
                 os.stat("tikz")
             except:
                 os.mkdir("tikz")
-            a=get_ipython().run_cell_magic("tikz","-S "+tikzpath+' '+tikzargs,tikzstring)
+            try:
+                display(Markdown('Figure `{0}*`.'.format(tikzfile)))
+                a=get_ipython().run_cell_magic("tikz","-S "+tikzpath+' '+tikzargs,tikzstring)
+            except(Error):
+                try:
+                    os.stat(tikzpath)
+                    display(Markdown('Figure `{0}`.'.format(tikzfile)))
+                    display(Image(filename=tikzpath))
+                except(FileNotFoundError):
+                    display(Markdown('La figure `{0}` est introuvable.'.format(tikzfile)))
         else:
             try:
                 os.stat(tikzpath)
