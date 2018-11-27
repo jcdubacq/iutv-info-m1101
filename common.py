@@ -6,12 +6,6 @@ import ipywidgets as widgets
 import datetime
 import os
 
-tikzmode = True
-
-try:
-    get_ipython().run_line_magic('reload_ext', 'tikzmagic')
-except(ModuleNotFoundError):
-    tikzmode = False
 
 interactif = False
 
@@ -33,6 +27,16 @@ class utils(object):
             mode = mode + ' Modèle numéro {}.'.format(seed)
             random.seed(seed)
         print(mode)
+        tikzmode = True
+        try:
+            get_ipython().run_line_magic('reload_ext', 'tikzmagic')
+        except(ModuleNotFoundError):
+            tikzmode = False
+        try:
+            os.stat("/usr/bin/pdflatex")
+        except:
+            tikzmode = False
+        self.tikzmode = tikzmode
     def switch(self,inter):
         self.interactif = False
         self.answers = False
@@ -50,7 +54,7 @@ class utils(object):
 
     def tikz(self,tikzfile,tikzargs,tikzstring):
         tikzpath="tikz/{0}.png".format(tikzfile)
-        if tikzmode:
+        if self.tikzmode:
             try:
                 os.stat("tikz")
             except:
@@ -58,7 +62,7 @@ class utils(object):
             try:
                 display(Markdown('Figure `{0}*`.'.format(tikzfile)))
                 a=get_ipython().run_cell_magic("tikz","-S "+tikzpath+' '+tikzargs,tikzstring)
-            except(Error):
+            except(FileNotFoundError):
                 try:
                     os.stat(tikzpath)
                     display(Markdown('Figure `{0}`.'.format(tikzfile)))
