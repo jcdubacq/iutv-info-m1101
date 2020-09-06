@@ -6,7 +6,6 @@ import ipywidgets as widgets
 import datetime
 import os
 
-
 interactif = False
 
 class utils(object):
@@ -51,6 +50,9 @@ class utils(object):
             self.answers = True
     def __str__(self):
         return "{} ".format(self.__class__.__name__)
+    def blanks(self,i):
+        return('`'+'_'*i+'`')
+
 
     def tikz(self,tikzfile,tikzargs,tikzstring):
         tikzpath="tikz/{0}.png".format(tikzfile)
@@ -125,7 +127,7 @@ class utils(object):
             display(Markdown(self.blank))
     def solcomment(self,markdown):
         if self.answers:
-            display(Markdown(markdown))
+            display(Markdown('**Solution:** '+markdown))
     
     def questionint(self,markdown,rangelow,rangehigh):
         print('', end='', flush=True)
