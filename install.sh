@@ -26,6 +26,9 @@ checkinstall() {
     fi
 }
 
+bold=$(tput bold)
+normal=$(tput sgr0)
+
 pipinstall() {
     echo -n "[python:$@]"
     $PIPNAME -q install $@
@@ -34,6 +37,8 @@ pipinstall() {
         echo "...ok"
     else
         echo "...ko"
+        echo "$bold"$PIPNAME install $@ "$normal"
+        $PIPNAME install $@
         exit
     fi
 }
@@ -48,6 +53,8 @@ jupyterconfig() {
         echo "...ok"
     else
         echo "...ko"
+        echo "$bold"jupyter "$@" "$normal"
+        jupyter "$@"
         exit
     fi
 }
@@ -75,12 +82,24 @@ pipinstall jupyter_contrib_nbextensions
 echo "[configuration]"
 jupyterconfig enable:nbextensions_configurator nbextensions_configurator enable
 jupyterconfig enable:widgetsnbextension nbextension enable --py widgetsnbextension
-jupyterconfig install:hide_code nbextension install --py hide_code
-jupyterconfig enable:hide_code nbextension enable --py hide_code
-jupyterconfig contrib:install contrib nbextension install
-jupyterconfig serverextension:hide_code serverextension enable --py hide_code
+jupyterconfig install:hide_code nbextension install --sys-prefix --py hide_code
+jupyterconfig enable:hide_code nbextension enable --sys-prefix --py hide_code
+jupyterconfig contrib:install contrib nbextension install  --sys-prefix
+jupyterconfig serverextension:hide_code serverextension enable --sys-prefix --py hide_code
 jupyterconfig enable:nbextensions_configurator nbextensions_configurator enable
 jupyterconfig enable:toc2 nbextension enable toc2/main
+
+# BUGFIX : templates not found for hide_code
+mkdir -p ~/.local/share/jupyter
+for a in /home/jcdubacq/Documents/enseignement/new-m1101/m1101 /home/TP/TPINFO/M1101/venv_M1101; do
+    where="$(pwd)"
+    if [ -d "$a" ]; then
+        for pat in $(find "$a" -name 'Templates'); do
+            cd "$pat"; cp * ~/.local/share/jupyter/
+        done
+    fi
+    cd "$where"
+done
 
 OLDIFS="$IFS"
 IFS=":"
